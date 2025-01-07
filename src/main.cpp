@@ -72,7 +72,7 @@ static void initModule() {
         saveInfo.mIconTable   = reinterpret_cast<const ResTIMG *>(gSaveIcon);
         saveInfo.mSaveGlobal  = false;
     }
-
+    gHoverSlideSetting.setBool(gHoverSlideSetting.getBool());
     // Register module
     BetterSMS::registerModule(sModuleInfo);
 
