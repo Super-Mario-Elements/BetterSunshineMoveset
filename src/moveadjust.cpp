@@ -56,11 +56,15 @@ SMS_WRITE_32(SMS_PORT_REGION(0x8025B8BC, 0x80253648, 0, 0), 0x60000000);
 SMS_PATCH_BL(SMS_PORT_REGION(0x8025B8C0, 0x8025364C, 0, 0), checkGroundSpeedLimit);
 SMS_WRITE_32(SMS_PORT_REGION(0x8025B8C4, 0x80253650, 0, 0), 0xEFFF0072);
 
+extern Settings::SwitchSetting gZoomiesSetting;
 static f32 checkSlideSpeedMulti() {
     TMario *player;
     SMS_FROM_GPR(30, player);
 
-    constexpr f32 speedCap         = 100.0f;
+    f32 speedCap         = 100.0f;
+    if (gZoomiesSetting.getBool()) {
+        speedCap = 99999999.f;
+    }
     constexpr f32 rocketMultiplier = 1.8f;
     constexpr f32 hoverMultiplier  = 1.2f;
     constexpr f32 brakeRate        = 0.005f;

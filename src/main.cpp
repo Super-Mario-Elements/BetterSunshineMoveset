@@ -45,10 +45,100 @@ using namespace BetterSMS;
 
 Settings::SettingsGroup gSettingsGroup(1, 0, Settings::Priority::MODE);
 
-static BetterSMS::ModuleInfo sModuleInfo("Better Sunshine Moveset", 1, 1, &gSettingsGroup);
+static BetterSMS::ModuleInfo sModuleInfo("Better Sunshine Moveset+", 1, 1, &gSettingsGroup);
+
+extern Settings::SwitchSetting gPoundJumpSetting;
+extern Settings::SwitchSetting gWaterPoundSetting;
+extern Settings::SwitchSetting gSMODiveSetting;
+extern Settings::SwitchSetting gSideDiveSetting;
+extern Settings::SwitchSetting gBurstCancelSetting;
+extern Settings::SwitchSetting gZoomiesSetting;
+
+static bool diveCharge = true;
+static bool prevState  = false;
+// EVIL CODING AREA
+void diveRotate(TMario *player) {
+    if (player->mController->mControlStick.mLengthFromNeutral >= 0.05f) {
+        u16 camRot       = gpCamera->mAngleYaw;
+        u16 stickRot     = player->mController->mControlStick.mAngle;
+        player->mAngle.y = (u16)(camRot + stickRot);
+    }
+}
+
+void sideDive(TMario *player) {
+    if (player->mState != 0x444 || !(player->mController->mButtons.mFrameInput & JUTGamePad::B) || 
+        (player->mController->mButtons.mFrameInput & JUTGamePad::A)) {
+        return;
+    }
+    player->changePlayerStatus(TMario::STATE_DIVE, 0, 0);
+    player->mForwardSpeed = 60.0f;
+    player->mSpeed.y      = 30.0f;
+    diveRotate(player);
+    return;
+}
+
+void rechargeDive(TMario *player) {
+    bool bIsMarioGrounded =
+        !(player->mState & TMario::STATE_AIRBORN) && !(player->mState & TMario::STATE_WATERBORN);
+    if (bIsMarioGrounded || player->mState & TMario::STATE_WATERBORN)
+        diveCharge = true;
+    return;
+}
+
+void SMODive(TMario *player, bool forceDive) {
+    if (gSMODiveSetting.getBool() == false)
+        return;
+
+    if ((player->mSpeed.y < 20.f && player->mController->mButtons.mInput & JUTGamePad::A) || forceDive) {
+        if (true) {
+            player->mSpeed.y = player->mJumpParams.mBroadJumpForceY.get() / 2;
+            diveCharge = false;
+        }
+    }
+    return;
+}
+
+void checkGPCDive(TMario *player) {
+    if (diveCharge) {
+        if (player->mState == TMario::STATE_G_POUND && (player->mController->mButtons.mFrameInput & JUTGamePad::B)) {
+            player->changePlayerStatus(TMario::STATE_DIVE, 0, 0);
+            SMODive(player, true);
+            diveRotate(player);
+        }
+    }
+}
+
+void checkSMODive(TMario *player, u32 param_1) {
+    if (diveCharge && player->mController->mPort == 0 && gSMODiveSetting.getBool())
+        SMODive(player, false);
+
+    player->startVoice(param_1);
+    return;
+}
+SMS_PATCH_BL(0x80254900, checkSMODive);
+
+void doDives(TMario* player, bool cool) {
+    if (player->mController->mPort != 0) {
+        return;
+    }
+
+    if (gSideDiveSetting.getBool())
+    sideDive(player);
+    
+    rechargeDive(player);
+
+    if (gSMODiveSetting.getBool())
+    checkGPCDive(player);
+}
 
 static void initModule() {
     // Register settings
+    gSettingsGroup.addSetting(&gZoomiesSetting);
+    gSettingsGroup.addSetting(&gSMODiveSetting);
+    gSettingsGroup.addSetting(&gSideDiveSetting);
+    gSettingsGroup.addSetting(&gBurstCancelSetting);
+    gSettingsGroup.addSetting(&gPoundJumpSetting);
+    gSettingsGroup.addSetting(&gWaterPoundSetting);
     gSettingsGroup.addSetting(&gLongJumpMappingSetting);
     gSettingsGroup.addSetting(&gLongJumpSetting);
     gSettingsGroup.addSetting(&gBackFlipSetting);
@@ -62,7 +152,7 @@ static void initModule() {
         auto &saveInfo        = gSettingsGroup.getSaveInfo();
         saveInfo.mSaveName    = Settings::getGroupName(gSettingsGroup);
         saveInfo.mBlocks      = 1;
-        saveInfo.mGameCode    = 'GMSB';
+        saveInfo.mGameCode    = 'SMTF';
         saveInfo.mCompany     = 0x3031;  // '01'
         saveInfo.mBannerFmt   = CARD_BANNER_CI;
         saveInfo.mBannerImage = reinterpret_cast<const ResTIMG *>(gSaveBnr);
@@ -88,6 +178,9 @@ static void initModule() {
     Player::addUpdateCallback(checkForPoundJump);
     Player::addUpdateCallback(checkForWaterPound);
     Player::addUpdateCallback(updateFallDamageContext);
+
+    Player::addUpdateCallback(doDives);
+
     Player::registerStateMachine(MultiJumpState, processMultiJump);
     Player::registerStateMachine(CrouchState, processCrouch);
     Player::registerStateMachine(PoundJumpState, processPoundJump);

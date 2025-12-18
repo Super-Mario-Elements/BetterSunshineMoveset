@@ -27,6 +27,7 @@ static void snapNozzleToReady() {
 }
 SMS_PATCH_BL(SMS_PORT_REGION(0x802699CC, 0, 0, 0), snapNozzleToReady);
 
+extern Settings::SwitchSetting gBurstCancelSetting;
 // extern -> fluddgeneral.cpp
 BETTER_SMS_FOR_CALLBACK void checkSpamHover(TMario *player, bool isMario) {
     TWaterGun *fludd = player->mFludd;
@@ -99,6 +100,15 @@ BETTER_SMS_FOR_CALLBACK void checkSpamHover(TMario *player, bool isMario) {
     } else if (player->mState == TMario::STATE_DIVESLIDE) {
         player->mSpeed.y += 35.0f - Min(player->mSpeed.y, 35.0f);
         player->mForwardSpeed += 30.0f;
+    } else if (player->mState == TMario::STATE_G_POUND && gBurstCancelSetting.getBool() == true) { // GROUND POUND CANCEL BABY, NERFED EDITION
+        player->mState = TMario::STATE_HOVER_F;
+        player->mSpeed.y += 55.0f - Min(player->mSpeed.y, 55.0f);
+        if (player->mController->mControlStick.mLengthFromNeutral >= 0.05f) {
+            u16 camRot       = gpCamera->mAngleYaw;
+            u16 stickRot     = player->mController->mControlStick.mAngle;
+            player->mAngle.y = (u16)(camRot + stickRot);
+        }
+
     }
 
     playerData->setCanSprayFludd(false);

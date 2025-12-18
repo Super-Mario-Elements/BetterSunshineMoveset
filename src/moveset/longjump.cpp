@@ -11,6 +11,8 @@
 
 #include "common.hxx"
 #include "player.hxx"
+#include "Manager/MarioParticleManager.hxx"
+#include "MSound/MSoundSESystem.hxx"
 
 using namespace BetterSMS;
 
@@ -44,6 +46,7 @@ f32 calcJumpPower(TMario *player, f32 factor, f32 base, f32 jumpPower) {
     return Max(base, (base * factor) + jumpPower);
 }
 
+//static TVec3f marioUp = {0.f, 50.f, 0.f};
 static void setJumpOrLongJump(TMario *player, u32 state, u32 unk_0) {
     constexpr f32 LongJumpMinSpeed = 10.0f;
 
@@ -101,11 +104,6 @@ static void setJumpOrLongJump(TMario *player, u32 state, u32 unk_0) {
         else
             moveData->mIsLongJumping = playerData->isMario() && (player->mActionState & 0x8) == 0;
 
-        /*if (gLongJumpSetting.getInt() == LongJumpSetting::MODE_NO_FLUDD)
-            moveData->mIsLongJumping =
-                (player->mActionState & 0x8) == 0 && !player->mAttributes.mHasFludd;
-        else
-            moveData->mIsLongJumping = (player->mActionState & 0x8) == 0;*/
         state = TMario::STATE_JUMP;
     }
 
