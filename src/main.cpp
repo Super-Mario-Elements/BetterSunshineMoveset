@@ -39,6 +39,8 @@ extern bool processMultiJump(TMario *);
 
 extern void updateFallDamageContext(TMario *, bool);
 
+extern void checkForCameraDemoHover(TMarDirector *director);
+
 // Module definition
 
 using namespace BetterSMS;
@@ -177,6 +179,7 @@ static void initModule() {
     Player::addUpdateCallback(checkForCrouch);
     Player::addUpdateCallback(checkForPoundJump);
     Player::addUpdateCallback(checkForWaterPound);
+    Stage::addUpdateCallback(checkForCameraDemoHover);
     Player::addUpdateCallback(updateFallDamageContext);
 
     Player::addUpdateCallback(doDives);

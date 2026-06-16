@@ -17,9 +17,11 @@
 using namespace BetterSMS;
 
 f32 calcJumpPower(TMario *player, f32 factor, f32 base, f32 jumpPower) {
-    base = Min(base, 100.0f);
+    base             = Min(base, 100.0f);
 
-    if (player->_388 != 0) {
+    auto *playerData = Player::getData(player);
+
+    if (!playerData->isMario()) {
         return Max(base, (base * factor) + jumpPower);
     }
 
@@ -55,7 +57,7 @@ static void setJumpOrLongJump(TMario *player, u32 state, u32 unk_0) {
     auto *moveData           = getPlayerMovementData(player);
     moveData->mIsLongJumping = false;
 
-    if (!moveData || player->_388 != 0) {
+    if (!moveData || !playerData->isMario()) {
         player->setStatusToJumping(state, unk_0);
         return;
     }
@@ -127,8 +129,10 @@ static void processJumpOrLongJump() {
     constexpr f32 LongJumpSpeedForward = 36.0f;
     constexpr f32 LongJumpSpeedUp      = 50.0f;
 
+    auto *playerData                   = Player::getData(player);
+
     auto *moveData = getPlayerMovementData(player);
-    if (!moveData || player->_388 != 0) {
+    if (!moveData || !playerData->isMario()) {
         player->mSpeed.y = calcJumpPower(player, 0.25f, player->mForwardSpeed, 42.0f);
         return;
     }
@@ -160,6 +164,10 @@ SMS_WRITE_32(SMS_PORT_REGION(0x80254544, 0x8024c2d0, 0, 0), 0x60000000);
 static bool checkDivingWhenLongJumping(TMario *player) {
     const bool onYoshi = player->onYoshi();
 
+    auto *bsmsData     = Player::getData(player);
+    if (!bsmsData->isMario())
+        return onYoshi;
+
     auto *moveData = getPlayerMovementData(player);
     if (!moveData)
         return onYoshi;
@@ -170,6 +178,10 @@ SMS_PATCH_BL(SMS_PORT_REGION(0x8024C394, 0x80244120, 0, 0), checkDivingWhenLongJ
 
 static bool checkRotatingWhenLongJumping(TMario *player, int *unk_0) {
     const bool rotated = player->checkStickRotate(unk_0);
+
+    auto *bsmsData = Player::getData(player);
+    if (!bsmsData->isMario())
+        return rotated;
 
     auto *moveData = getPlayerMovementData(player);
     if (!moveData)
@@ -184,6 +196,10 @@ static bool checkQuickFallWhenLongJumping() {
     SMS_FROM_GPR(30, player);
 
     const bool slowFalling = ((player->mActionState & 0x80) != 0);
+
+    auto *bsmsData = Player::getData(player);
+    if (!bsmsData->isMario())
+        return slowFalling;
 
     auto *moveData = getPlayerMovementData(player);
     if (!moveData)
