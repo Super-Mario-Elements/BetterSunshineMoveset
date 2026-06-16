@@ -154,7 +154,7 @@ static void initModule() {
         auto &saveInfo        = gSettingsGroup.getSaveInfo();
         saveInfo.mSaveName    = Settings::getGroupName(gSettingsGroup);
         saveInfo.mBlocks      = 1;
-        saveInfo.mGameCode    = 'SMTF';
+        saveInfo.mGameCode    = 'BSMX'; // I need to stop changing this
         saveInfo.mCompany     = 0x3031;  // '01'
         saveInfo.mBannerFmt   = CARD_BANNER_CI;
         saveInfo.mBannerImage = reinterpret_cast<const ResTIMG *>(gSaveBnr);

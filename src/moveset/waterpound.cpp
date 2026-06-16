@@ -63,10 +63,8 @@ BETTER_SMS_FOR_CALLBACK bool processWaterPound(TMario *player) {
         return true;
     }
 
-    //player->checkWallPlane(player->mTranslation, 80.0f, player->mCollisionXZSize);
-    using FunctionPtr = void(*)(TMario* player, TVec3f pos, float height, float width);
-    FunctionPtr func = reinterpret_cast<FunctionPtr>(0x802555FC);
-    func(player, player->mTranslation, 80.0f, player->mCollisionXZSize);
+    //player->checkWallPlane(player->mTranslation, 80.0f, player->mCollisionXZSize); someone should really fix this at some point ig
+    ((int (*)(...))0x802555FC)(player->mTranslation, 80.0f, player->mCollisionXZSize);
     
 
     if (player->mSubState == 0) {
