@@ -134,7 +134,7 @@ static TMarioControllerWork* getMarioControllerWorkForKeepHover() {
     player->mController->_B0 = player->mController->mButtons.mTriggerL;
     player->mController->_B4 = player->mController->mButtons.mTriggerR;
     //player->checkController(nullptr); // is it just me or does josh keep shipping changes that dont build bc of interface stuff.
-    ((int (*)(...))0x80251494)(nullptr);
+    ((int (*)(...))0x80251494)(player, nullptr);
 
     return player->mControllerWork;
 }
