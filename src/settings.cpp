@@ -8,22 +8,22 @@ static bool sBackFlipActive = true;
 Settings::SwitchSetting gBackFlipSetting("Back Flip", &sBackFlipActive);
 
 static bool sZoomies = false;
-Settings::SwitchSetting gZoomiesSetting("Zoomies+ (Cheat)", &sZoomies);
+Settings::SwitchSetting gZoomiesSetting("Zoomies (Cheat)", &sZoomies);
 
 static bool sPoundJumpActive = true;
-Settings::SwitchSetting gPoundJumpSetting("Ground Pound Jump+", &sPoundJumpActive);
+Settings::SwitchSetting gPoundJumpSetting("Ground Pound Jump", &sPoundJumpActive);
 
 static bool sSMODive = true;
-Settings::SwitchSetting gSMODiveSetting("SMO Dive+", &sSMODive);
+Settings::SwitchSetting gSMODiveSetting("SMO Dive", &sSMODive);
 
 static bool sSideDive = true;
-Settings::SwitchSetting gSideDiveSetting("Side Dive+", &sSideDive);
+Settings::SwitchSetting gSideDiveSetting("Side Dive", &sSideDive);
 
 static bool sBurstCancel = true;
-Settings::SwitchSetting gBurstCancelSetting("Burst Cancel+", &sBurstCancel);
+Settings::SwitchSetting gBurstCancelSetting("Burst Cancel", &sBurstCancel);
 
 static bool sWaterPoundActive = true;
-Settings::SwitchSetting gWaterPoundSetting("Water Ground Pound+", &sWaterPoundActive);
+Settings::SwitchSetting gWaterPoundSetting("Water Ground Pound", &sWaterPoundActive);
 
 static bool sHoverBurstActive = true;
 Settings::SwitchSetting gHoverBurstSetting("Hover Burst", &sHoverBurstActive);

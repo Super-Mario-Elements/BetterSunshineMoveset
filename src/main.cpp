@@ -47,7 +47,7 @@ using namespace BetterSMS;
 
 Settings::SettingsGroup gSettingsGroup(1, 0, Settings::Priority::MODE);
 
-static BetterSMS::ModuleInfo sModuleInfo("Better Sunshine Moveset+", 1, 1, &gSettingsGroup);
+static BetterSMS::ModuleInfo sModuleInfo("Better Sunset Moveset", 1, 1, &gSettingsGroup);
 
 extern Settings::SwitchSetting gPoundJumpSetting;
 extern Settings::SwitchSetting gWaterPoundSetting;
@@ -154,7 +154,7 @@ static void initModule() {
         auto &saveInfo        = gSettingsGroup.getSaveInfo();
         saveInfo.mSaveName    = Settings::getGroupName(gSettingsGroup);
         saveInfo.mBlocks      = 1;
-        saveInfo.mGameCode    = 'BSMX'; // I need to stop changing this
+        saveInfo.mGameCode    = 'BSMS'; // I need to stop changing this
         saveInfo.mCompany     = 0x3031;  // '01'
         saveInfo.mBannerFmt   = CARD_BANNER_CI;
         saveInfo.mBannerImage = reinterpret_cast<const ResTIMG *>(gSaveBnr);
