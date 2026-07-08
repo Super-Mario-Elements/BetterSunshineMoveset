@@ -64,8 +64,7 @@ BETTER_SMS_FOR_CALLBACK bool processWaterPound(TMario *player) {
     }
 
     //player->checkWallPlane(player->mTranslation, 80.0f, player->mCollisionXZSize); someone should really fix this at some point ig
-    ((int (*)(...))0x802555FC)(player->mTranslation, 80.0f, player->mCollisionXZSize);
-    
+    ((int (*)(...))0x802555FC)(player, player->mTranslation, 80.0f, player->mCollisionXZSize);
 
     if (player->mSubState == 0) {
         if (player->mSubStateTimer++ == 0) {
